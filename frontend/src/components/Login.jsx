@@ -7,12 +7,6 @@ export default function Login({ onAuth }) {
   const [password, setPass] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-axios.post(`${BASE_URL}/auth/login`, ...)
-
 
   const login = async () => {
     if (!email || !password) {
@@ -32,7 +26,7 @@ axios.post(`${BASE_URL}/auth/login`, ...)
       onAuth(res.data.token, res.data.tenantId);
 
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.response?.data?.error || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -86,8 +80,7 @@ axios.post(`${BASE_URL}/auth/login`, ...)
             className={`w-full py-2.5 mt-4 rounded-lg text-white font-medium transition-all 
               ${loading 
                 ? "bg-slate-600 cursor-not-allowed" 
-                : "bg-violet-600 hover:bg-violet-700 active:scale-[0.98]"}
-            `}
+                : "bg-violet-600 hover:bg-violet-700 active:scale-[0.98]"}`}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
