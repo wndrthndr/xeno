@@ -17,19 +17,19 @@ const USERS = [
   {
     id: 1,
     email: "xeno@test.com",
-    password: "$2a$10$E9lSKMsA5/5zElyj4ZsRuO1hHgAlEd6dJfG93sDjHXKPSvMBbKmUC", // 1234
+    password: "$2a$12$2s67ItL.qTjOyTNLGBhWjeG6TMCLZtjv/eRe2.iGMU3oB8hqEP8Ka", // 1234
     tenantId: 1
   },
   {
     id: 2,
     email: "store2@xeno.com",
-    password: "$2a$10$L4vsfRcFJUOjkHo9a9pVwOANbd6uGoHcDoCVhtpKFc5y9g1KgmvDK", // store2
+    password: "$2a$12$MdiZX2oVL.iC5fwMzjFv/OzQGFz.VXHBaoVlJT2tHQRv/mOlEwry6", // store2
     tenantId: 2
   },
   {
     id: 3,
     email: "store3@xeno.com",
-    password: "$2a$10$oaCqTem9D8UNNbggS3Mm1O4ih73OVS2I6lj7z2fd7lpKgOo3RfVv6", // store3
+    password: "$$2a$12$NpoDXkEHgocKvhvq1C3ClOmnS6VJl6X8zbgiOhxwh.7ax5wD4PKMu", // store3
     tenantId: 3
   }
 ];
