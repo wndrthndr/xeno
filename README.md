@@ -1,203 +1,376 @@
-project:
-  name: "Shopify Multi-Tenant Data Ingestion & Insights Platform"
-  assignment: "Xeno FDE Internship 2025"
-  description: >
-    A multi-tenant analytics platform that simulates Shopify data ingestion and
-    business insights through a centralized dashboard. Designed to reflect
-    enterprise SaaS architecture, tenant isolation, and real-world engineering
-    workflows.
+🚀 Shopify Multi-Tenant Data Ingestion & Insights Platform
 
-objectives:
-  - Build a tenant-aware ingestion service for Shopify stores
-  - Enforce strict data isolation per tenant
-  - Compute business insights using SQL aggregations
-  - Deliver insights via a production-style dashboard
-  - Design system with enterprise extensibility in mind
+🌟 Project Overview
 
-key_features:
-  authentication:
-    - JWT-based login
-    - Tenant embedded in token payload
-    - API security via middleware
-  multi_tenancy:
-    - Single database, multi-tenant architecture
-    - tenant_id scoped queries
-    - Logical tenant isolation
-  analytics:
-    - Total customers, orders, and revenue
-    - Orders by date
-    - Top 5 customers
-    - Revenue comparison across weeks
-    - Monthly revenue breakdown
-  ingestion:
-    - Shopify API used for product and customer seeding
-    - Local order generation for realistic scale simulation
-  deployment:
-    - Cloud-hosted backend
-    - Cloud-deployed frontend
+This project is a multi-tenant analytics platform simulating Shopify data ingestion and delivering actionable business insights through a centralized, production-style dashboard. It is designed to reflect enterprise SaaS architecture, focusing heavily on tenant isolation, extensibility, and real-world engineering workflows.
 
-setup_instructions:
-  backend:
-    description: "API service for authentication and metrics"
-    steps:
-      - cd backend
-      - npm install
-      - node server.js
-    default_port: 5000
-    local_url: "http://localhost:5000"
-  frontend:
-    description: "Analytics dashboard"
-    steps:
-      - cd frontend
-      - npm install
-      - npm run dev
-  environment_variables:
-    - key: SHOP
-      description: Shopify development store name
-    - key: TOKEN
-      description: Shopify Admin API access token
+Assignment
 
-architecture:
-  diagram: |
-    Shopify Store
-         |
-         v
-    Ingestion Layer
-         |
-         v
-    Node.js API
-         |
-         v
-       MySQL
-         |
-         v
-    React Dashboard
-  components:
-    - name: Shopify Dev Store
-      responsibility: Provides products and customers
-    - name: Ingestion Layer
-      responsibility: Seeds and simulates order data
-    - name: API Layer
-      responsibility: Exposes tenant-aware analytics endpoints
-    - name: Database
-      responsibility: Stores tenant-isolated order data
-    - name: Dashboard
-      responsibility: Displays metrics and analytics
+Xeno FDE Internship 2025
 
-authentication:
-  token_type: JWT
-  payload_structure:
-    userId: "integer"
-    tenantId: "integer"
-  security_model:
-    - Token validation middleware
-    - Tenant-scoped queries
+🎯 Objectives
 
-api_endpoints:
-  authentication:
-    - method: POST
-      path: /auth/login
-      purpose: Authenticate user and return token
-  dashboards:
-    - method: GET
-      path: /api/metrics
-      purpose: Returns summary KPIs
-    - method: GET
-      path: /api/orders
-      purpose: Fetches tenant orders
-    - method: GET
-      path: /api/orders-by-date
-      purpose: Returns time-series analytics
-    - method: GET
-      path: /api/top-customers
-      purpose: Top customers by spend
-    - method: GET
-      path: /api/revenue-compare
-      purpose: Revenue growth calculation
+Build a tenant-aware ingestion service for Shopify stores.
 
-database:
-  engine: MySQL
-  schema:
-    table: orders
-    columns:
-      - name: id
-        type: integer
-        description: Primary key
-      - name: shopify_order_id
-        type: string
-        description: External reference
-      - name: customer_name
-        type: string
-        description: Customer
-      - name: total_price
-        type: decimal
-        description: Revenue
-      - name: created_at
-        type: timestamp
-        description: Order timestamp
-      - name: tenant_id
-        type: integer
-        description: Tenant scope identifier
-  isolation:
-    method: SQL scoping
-    example: "SELECT * FROM orders WHERE tenant_id = ?"
-    benefit:
-      - Safe data isolation
-      - Predictable scaling
-      - Simple schema
+Enforce strict data isolation per tenant.
 
-assumptions:
-  - One tenant maps to one Shopify store
-  - Authentication uses JWT only
-  - A single database is sufficient
-  - Shopify used for data realism
-  - Orders generated locally for scalability
-  - No role-level permissions required
+Compute core business insights using SQL aggregations.
 
-known_limitations:
-  - Webhooks not implemented
-  - No scheduler or periodic sync
-  - ORM not used
-  - Hardcoded demo users
-  - No onboarding workflow
-  - No retry handling
-  - No audit logs
-  - No role-based access
+Deliver insights via a production-style dashboard.
 
-production_roadmap:
-  ingestion:
-    - Shopify webhooks
-    - Event replay
-    - Data validation
-  scaling:
-    - Queue-based ingestion
-    - Background workers
-    - Horizontal scaling
-  data_layer:
-    - ORM adoption
-    - Migration framework
-  security:
-    - OAuth onboarding
-    - Token rotation
-    - RBAC
-  observability:
-    - Central logging
-    - Metrics
-    - Alerts
+Design the system with enterprise extensibility in mind.
 
-demo:
-  includes:
-    - Architecture walkthrough
-    - Tenant isolation demo
-    - Dashboard walkthrough
-    - Engineering trade-offs
-    - Future roadmap
+✨ Key Features
 
-deployment:
-  backend_url: "ADD_DEPLOYED_BACKEND_URL"
-  frontend_url: "ADD_DEPLOYED_FRONTEND_URL"
+Feature Area
 
-author:
-  name: "Vishal Nukala"
+Details
 
-license: "MIT"
+Authentication
+
+JWT-based login, Tenant ID embedded in the token payload, API security enforced via middleware.
+
+Multi-Tenancy
+
+Single database, multi-tenant architecture, ensuring logical tenant isolation via tenant_id scoped queries.
+
+Analytics
+
+Total customers, orders, and revenue; Orders by date time-series; Top 5 customers; Weekly and monthly revenue comparison.
+
+Ingestion
+
+Uses Shopify API for initial product/customer seeding, combined with local order generation for realistic scale simulation.
+
+Deployment
+
+Designed for cloud-hosted backend and frontend deployment.
+
+📐 Architecture
+
+Diagram
+
+The system follows a classic three-tier architecture, emphasizing a clean data flow from source to presentation.
+
+graph TD
+    A[Shopify Dev Store] --> B(Ingestion Layer);
+    B --> C(Node.js API);
+    C --> D[MySQL Database];
+    D --> E(React Dashboard);
+
+
+Components
+
+Name
+
+Responsibility
+
+Shopify Dev Store
+
+Provides foundational data (products, customers) for realism.
+
+Ingestion Layer
+
+Seeds and simulates high-volume order data into the database.
+
+API Layer (Node.js)
+
+Exposes secure, tenant-aware analytics endpoints.
+
+Database (MySQL)
+
+Stores tenant-isolated order data.
+
+Dashboard (React)
+
+Displays metrics and analytics visually.
+
+🛠️ Setup & Local Development
+
+Prerequisites
+
+You will need Node.js, npm, and a running MySQL instance.
+
+Environment Variables
+
+Create a .env file in the backend directory with the following variables:
+
+Key
+
+Description
+
+Example
+
+SHOP
+
+Your Shopify development store name (e.g., my-store-name)
+
+my-store-name.myshopify.com
+
+TOKEN
+
+Shopify Admin API access token (required for seeding)
+
+shpat_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+DB_HOST
+
+Database connection host
+
+localhost
+
+DB_USER
+
+Database username
+
+root
+
+DB_PASSWORD
+
+Database password
+
+mypassword
+
+DB_NAME
+
+Database name
+
+shopify_analytics
+
+JWT_SECRET
+
+Secret key for JWT signing (use a strong random string)
+
+a-very-secret-key
+
+Backend (API Service)
+
+The API service handles authentication and serves metrics.
+
+cd backend
+npm install
+node server.js
+# Default Port: 5000
+# Local URL: http://localhost:5000
+
+
+Frontend (Analytics Dashboard)
+
+The React dashboard displays the fetched analytics.
+
+cd frontend
+npm install
+npm run dev
+
+
+🔒 Authentication & Security
+
+Token Structure (JWT)
+
+The JWT payload enforces multi-tenancy at the application layer:
+
+{
+  "userId": "integer",
+  "tenantId": "integer",
+  "iat": 1678886400,
+  "exp": 1678890000
+}
+
+
+Security Model
+
+Token Validation Middleware: Ensures every incoming request has a valid, non-expired JWT.
+
+Tenant-Scoped Queries: All database queries are automatically filtered using the tenantId extracted from the valid token, ensuring logical isolation.
+
+📊 API Endpoints
+
+Method
+
+Path
+
+Purpose
+
+Security
+
+POST
+
+/auth/login
+
+Authenticate user and return JWT token.
+
+Public
+
+GET
+
+/api/metrics
+
+Returns summary KPIs (Total Customers, Orders, Revenue).
+
+Secured
+
+GET
+
+/api/orders
+
+Fetches a list of all tenant orders.
+
+Secured
+
+GET
+
+/api/orders-by-date
+
+Returns time-series analytics for orders.
+
+Secured
+
+GET
+
+/api/top-customers
+
+Top 5 customers ranked by total spend.
+
+Secured
+
+GET
+
+/api/revenue-compare
+
+Calculates week-over-week or month-over-month revenue growth.
+
+Secured
+
+🗄️ Database Schema (MySQL)
+
+Table: orders
+
+The multi-tenancy model relies on a discriminator column (tenant_id) within a single database table.
+
+Name
+
+Type
+
+Description
+
+id
+
+integer
+
+Primary key
+
+shopify_order_id
+
+string
+
+External reference from Shopify
+
+customer_name
+
+string
+
+Name of the customer
+
+total_price
+
+decimal
+
+Revenue generated by the order
+
+created_at
+
+timaestamp
+
+Order placement time
+
+tenant_id
+
+integer
+
+Tenant scope identifier (Crucial for isolation)
+
+Isolation Method
+
+SQL Scoping: Every query executed against the orders table must include a WHERE tenant_id = ? clause, where ? is the ID extracted from the authenticated user's JWT.
+
+⚠️ Assumptions & Known Limitations
+
+Assumptions
+
+One tenant maps to one Shopify store.
+
+Authentication strictly uses JWT.
+
+A single MySQL database is sufficient for the MVP.
+
+Orders are generated locally to simulate scale and avoid API rate limits.
+
+Known Limitations (MVP Scope)
+
+Shopify Webhooks are not implemented (ingestion is pull/simulated only).
+
+No scheduler or periodic sync mechanism exists.
+
+No ORM is used (raw SQL queries used for simplicity).
+
+Hardcoded demo users for demonstration purposes.
+
+No comprehensive onboarding or self-service workflow.
+
+No retry handling or circuit breakers are implemented.
+
+No audit logging or advanced observability.
+
+No role-based access control (RBAC).
+
+🛣️ Production Roadmap
+
+Area
+
+Future Steps
+
+Ingestion
+
+Implement Shopify webhooks for real-time updates, event replay mechanisms, and data validation pipeline.
+
+Scaling
+
+Introduce queue-based ingestion, background workers for long-running tasks, and horizontal scaling of the API layer.
+
+Data Layer
+
+Adopt an ORM (e.g., Sequelize, Prisma) and implement a database migration framework.
+
+Security
+
+Implement OAuth for secure tenant onboarding, JWT token rotation, and RBAC.
+
+Observability
+
+Integrate centralized logging, metrics dashboards, and critical alerts.
+
+💡 Demo Topics
+
+The demo will cover the following key areas:
+
+Detailed architecture walkthrough.
+
+Live demonstration of strict tenant isolation.
+
+Dashboard feature walkthrough (KPIs and charts).
+
+Discussion of engineering trade-offs made for the MVP.
+
+Overview of the future roadmap and scaling plans.
+
+🌐 Deployment Status
+
+Backend URL: ADD_DEPLOYED_BACKEND_URL
+
+Frontend URL: ADD_DEPLOYED_FRONTEND_URL
+
+👤 Author & License
+
+Author: Vishal Nukala
+
+License: MIT
