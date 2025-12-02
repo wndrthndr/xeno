@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "./api";
 import Login from "./components/Login";
 import { Charts } from "./components/Charts";
 import TopCustomers from "./components/TopCustomers";
 import { PieChartComponent } from "./components/PieChart";
 
 export default function App() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
   const [authed, setAuthed] = useState(!!localStorage.getItem("token"));
   const [tenant, setTenant] = useState(localStorage.getItem("tenantId"));
@@ -21,35 +23,35 @@ export default function App() {
   const [view, setView] = useState("daily");
 
   // Attach token automatically
-  const token = localStorage.getItem("token");
-  if (token) axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  
 
   useEffect(() => {
     if (authed && tenant) fetchAll();
   }, [tenant, start, end]);
 
-  const fetchAll = async () => {
-    try {
-      const [m, d, t, c] = await Promise.all([
-        axios.get("http://localhost:5000/api/metrics"),
-        axios.get(`http://localhost:5000/api/orders-by-date?start=${start}&end=${end}`),
-        axios.get("http://localhost:5000/api/top-customers"),
-        axios.get("http://localhost:5000/api/revenue-compare")
-      ]);
+ const fetchAll = async () => {
+  try {
+    const [m, d, t, c] = await Promise.all([
+      api.get("/api/metrics"),
+      api.get(`/api/orders-by-date?start=${start}&end=${end}`),
+      api.get("/api/top-customers"),
+      api.get("/api/revenue-compare")
+    ]);
 
-      setMetrics(m.data);
-      setChart(d.data);
-      setTop(t.data);
-      setCompare(c.data);
+    setMetrics(m.data);
+    setChart(d.data);
+    setTop(t.data);
+    setCompare(c.data);
 
-    } catch (err) {
-      console.error("Fetch failed:", err.response?.data || err.message);
-      setMetrics({});
-      setChart([]);
-      setTop([]);
-      setCompare({});
-    }
-  };
+  } catch (err) {
+    console.error("Fetch failed:", err.response?.data || err.message);
+    setMetrics({});
+    setChart([]);
+    setTop([]);
+    setCompare({});
+  }
+};
+
 
   if (!authed || !tenant) {
     return (

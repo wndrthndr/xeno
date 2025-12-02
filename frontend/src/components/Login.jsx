@@ -26,7 +26,7 @@ export default function Login({ onAuth }) {
       onAuth(res.data.token, res.data.tenantId);
 
     } catch (err) {
-      setError("Invalid email or password");
+      setError(err.response?.data?.error || "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -80,8 +80,7 @@ export default function Login({ onAuth }) {
             className={`w-full py-2.5 mt-4 rounded-lg text-white font-medium transition-all 
               ${loading 
                 ? "bg-slate-600 cursor-not-allowed" 
-                : "bg-violet-600 hover:bg-violet-700 active:scale-[0.98]"}
-            `}
+                : "bg-violet-600 hover:bg-violet-700 active:scale-[0.98]"}`}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
