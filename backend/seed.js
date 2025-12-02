@@ -22,7 +22,7 @@ async function main() {
 
   const SHOP = process.env.SHOP;
   const TOKEN = process.env.TOKEN;
-  const TENANT_ID = [2,3];    // Your demo tenant
+  const TENANT_ID = [1,2,3];    // Your demo tenant
 
   const headers = {
     "X-Shopify-Access-Token": TOKEN,
