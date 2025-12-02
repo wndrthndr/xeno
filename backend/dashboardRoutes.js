@@ -16,7 +16,7 @@ router.get("/metrics", async (req, res) => {
       COUNT(*) orders,
       COALESCE(SUM(total_price),0) revenue
     FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
   `, [req.user.tenantId]);
 
   res.json(rows[0]);
@@ -32,7 +32,7 @@ router.get("/orders-by-date", async (req, res) => {
       COUNT(*) orders,
       SUM(total_price) revenue
     FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
     AND created_at BETWEEN ? AND ?
     GROUP BY d
     ORDER BY d ASC
@@ -45,7 +45,7 @@ router.get("/orders-by-date", async (req, res) => {
 router.get("/orders", async (req, res) => {
   const [rows] = await db.query(`
     SELECT * FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
     ORDER BY created_at DESC
   `, [req.user.tenantId]);
 
@@ -57,7 +57,7 @@ router.get("/top-customers", async (req, res) => {
   const [rows] = await db.query(`
     SELECT customer_name, SUM(total_price) spend
     FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
     GROUP BY customer_name
     ORDER BY spend DESC
     LIMIT 5
@@ -72,14 +72,14 @@ router.get("/revenue-compare", async (req, res) => {
   const [[last7]] = await db.query(`
     SELECT COALESCE(SUM(total_price),0) revenue
     FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
       AND created_at >= CURDATE() - INTERVAL 7 DAY
   `, [req.user.tenantId]);
 
   const [[prev7]] = await db.query(`
     SELECT COALESCE(SUM(total_price),0) revenue
     FROM orders
-    WHERE tenant_id = ?
+    WHERE tenant_id = $1
       AND created_at BETWEEN CURDATE() - INTERVAL 14 DAY
                           AND CURDATE() - INTERVAL 7 DAY
   `, [req.user.tenantId]);
