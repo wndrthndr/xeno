@@ -33,9 +33,9 @@ export default function App() {
   const fetchAll = async () => {
     try {
       const [m, d, t, c] = await Promise.all([
-        axios.get(`${BASE_URL}/api/metrics`)
-axios.get(`${BASE_URL}/api/orders-by-date?start=${start}&end=${end}`)
-axios.get(`${BASE_URL}/api/top-customers`)
+        axios.get(`${BASE_URL}/api/metrics`),
+axios.get(`${BASE_URL}/api/orders-by-date?start=${start}&end=${end}`),
+axios.get(`${BASE_URL}/api/top-customers`),
 axios.get(`${BASE_URL}/api/revenue-compare`)
       ]);
 
