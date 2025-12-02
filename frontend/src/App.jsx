@@ -6,11 +6,9 @@ import TopCustomers from "./components/TopCustomers";
 import { PieChartComponent } from "./components/PieChart";
 
 export default function App() {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
-  const [authed, setAuthed] = useState(!!localStorage.getItem("token"));
-  const [tenant, setTenant] = useState(localStorage.getItem("tenantId"));
+  const [authed, setAuthed] = useState(false);
+  const [tenant, setTenant] = useState(null);
 
   const [metrics, setMetrics] = useState({});
   const [chart, setChart] = useState([]);
@@ -22,47 +20,51 @@ export default function App() {
   const [chartType, setChartType] = useState("orders");
   const [view, setView] = useState("daily");
 
-  // Attach token automatically
-  
+  // ✅ FORCE LOGOUT ON LOAD (debug-safe)
+  useEffect(() => {
+    localStorage.clear();
+    setAuthed(false);
+    setTenant(null);
+  }, []);
 
+  // ✅ Fetch data only when authenticated
   useEffect(() => {
     if (authed && tenant) fetchAll();
-  }, [tenant, start, end]);
+  }, [authed, tenant, start, end]);
 
- const fetchAll = async () => {
-  try {
-    const [m, d, t, c] = await Promise.all([
-      api.get("/api/metrics"),
-      api.get(`/api/orders-by-date?start=${start}&end=${end}`),
-      api.get("/api/top-customers"),
-      api.get("/api/revenue-compare")
-    ]);
+  const fetchAll = async () => {
+    try {
+      const [m, d, t, c] = await Promise.all([
+        api.get("/api/metrics"),
+        api.get(`/api/orders-by-date?start=${start}&end=${end}`),
+        api.get("/api/top-customers"),
+        api.get("/api/revenue-compare")
+      ]);
 
-    setMetrics(m.data);
-    setChart(d.data);
-    setTop(t.data);
-    setCompare(c.data);
+      setMetrics(m.data);
+      setChart(d.data);
+      setTop(t.data);
+      setCompare(c.data);
 
-  } catch (err) {
-    console.error("Fetch failed:", err.response?.data || err.message);
-    setMetrics({});
-    setChart([]);
-    setTop([]);
-    setCompare({});
-  }
-};
+    } catch (err) {
+      console.error("Fetch failed:", err.response?.data || err.message);
+      setMetrics({});
+      setChart([]);
+      setTop([]);
+      setCompare({});
+    }
+  };
 
-
+  // ✅ SHOW LOGIN IF NOT AUTHED
   if (!authed || !tenant) {
     return (
       <Login
-       onAuth={(token, tenantId) => {
-  localStorage.setItem("token", token);
-  localStorage.setItem("tenantId", tenantId);
-  setTenant(tenantId);
-  setAuthed(true);
-}}
-
+        onAuth={(token, tenantId) => {
+          localStorage.setItem("token", token);
+          localStorage.setItem("tenantId", tenantId);
+          setTenant(tenantId);
+          setAuthed(true);
+        }}
       />
     );
   }
@@ -95,7 +97,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* KPI CARDS */}
+      {/* KPIs */}
       <section className="stats">
         <Stat title="Revenue" value={`₹ ${(metrics.revenue || 0).toLocaleString()}`} trend={compare.growth} kind="revenue" />
         <Stat title="Growth" value={`${compare.growth || 0}%`} trend={compare.growth} kind="growth" />
@@ -103,7 +105,7 @@ export default function App() {
         <Stat title="Customers" value={metrics.customers || 0} kind="customers" />
       </section>
 
-      {/* MAIN CHART AREA */}
+      {/* Charts */}
       <section className="orders-section">
         <div className="charts-panel">
 
@@ -136,25 +138,16 @@ export default function App() {
             </div>
           </div>
 
-          {chart.length === 0 && (
-            <div className="empty-state">No data available for this tenant</div>
-          )}
+          {chart.length === 0 && <div className="empty-state">No data available</div>}
 
           {chart.length > 0 && (
-            <Charts
-              data={chart}
-              type={chartType}
-              view={view}
-              start={start}
-              end={end}
-              range={30}
-            />
+            <Charts data={chart} type={chartType} view={view} start={start} end={end} range={30} />
           )}
 
         </div>
       </section>
 
-      {/* GRID SECTION */}
+      {/* Bottom Grid */}
       <section className="grid-two">
         <TopCustomers rows={top} />
         <PieChartComponent orders={chart} />
@@ -164,6 +157,7 @@ export default function App() {
   );
 }
 
+// KPI box
 function Stat({ title, value, trend, kind }) {
   return (
     <div className={`stat-card stat-${kind}`}>
