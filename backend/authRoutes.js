@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
-const SECRET = "xeno_secret_key";
+const SECRET = process.env.JWT_SECRET || "xeno_secret_key";
 
 // ✅ HARD-CODED DEMO USERS (FOR INTERVIEW / ASSIGNMENT)
 const USERS = [
