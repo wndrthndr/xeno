@@ -3,9 +3,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
-const SECRET = process.env.JWT_SECRET || "xeno_secret_key";
 
-// ✅ HARD-CODED DEMO USERS (FOR INTERVIEW / ASSIGNMENT)
+// ✅ SECRET from ENV (fallback for local)
+const SECRET = String(process.env.JWT_SECRET || "xeno_secret_key");
+
+// ✅ DEMO USERS (STATIC FOR ASSIGNMENT)
 const USERS = [
   {
     id: 1,
@@ -29,28 +31,39 @@ const USERS = [
 
 // ✅ LOGIN ROUTE
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = USERS.find(u => u.email === email);
-  if (!user) return res.status(404).json({ error: "User not found" });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email & password required" });
+    }
 
-  const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.status(401).json({ error: "Wrong password" });
+    const user = USERS.find(u => u.email === email.trim());
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-  const token = jwt.sign(
-    { userId: user.id, tenantId: user.tenantId },
-    SECRET,
-    { expiresIn: "1d" }
-  );
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) return res.status(401).json({ error: "Wrong password" });
 
-  res.json({
-    token,
-    tenantId: user.tenantId,
-    tenantName: `Tenant ${user.tenantId}`
-  });
+    const token = jwt.sign(
+      { userId: user.id, tenantId: user.tenantId },
+      SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      token,
+      tenantId: user.tenantId,
+      tenantName: `Tenant ${user.tenantId}`
+    });
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err.message);
+    res.status(500).json({ error: "Login failed" });
+  }
 });
 
-// ✅ JWT PROTECT MIDDLEWARE
+
+// ✅ JWT PROTECTION
 function auth(req, res, next) {
   const header = req.headers.authorization;
 
@@ -61,11 +74,14 @@ function auth(req, res, next) {
   const token = header.split(" ")[1];
 
   jwt.verify(token, SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: "Invalid token" });
+    if (err) {
+      console.error("JWT VERIFY FAILED:", err.message);
+      return res.status(403).json({ error: "Invalid token" });
+    }
+
     req.user = user;
     next();
   });
 }
-
 
 module.exports = { router, auth };
