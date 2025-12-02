@@ -9,33 +9,23 @@ export default function Login({ onAuth }) {
   const [loading, setLoading] = useState(false);
 
   const login = async () => {
-    console.log("LOGIN SENT:", { email, password });
+  const cleanEmail = email.trim().toLowerCase();
 
-    if (!email || !password) {
-      setError("Enter email and password");
-      return;
-    }
+  try {
+    const res = await api.post("/auth/login", {
+      email: cleanEmail,
+      password
+    });
 
-    setLoading(true);
-    setError("");
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("tenantId", res.data.tenantId);
 
-    try {
-      const res = await api.post("/auth/login", { email, password });
+    onAuth(res.data.token, res.data.tenantId);
+  } catch (err) {
+    setError(err.response?.data?.error || "Login failed");
+  }
+};
 
-      console.log("LOGIN OK:", res.data);
-
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("tenantId", res.data.tenantId);
-
-      onAuth(res.data.token, res.data.tenantId);
-
-    } catch (err) {
-      console.error("LOGIN ERROR:", err.response?.data || err.message);
-      setError(err.response?.data?.error || "Invalid email or password");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
