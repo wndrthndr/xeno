@@ -22,10 +22,15 @@ export default function App() {
 
   // ✅ FORCE LOGOUT ON LOAD (debug-safe)
   useEffect(() => {
-    localStorage.clear();
-    setAuthed(false);
-    setTenant(null);
-  }, []);
+  const token = localStorage.getItem("token");
+  const tenant = localStorage.getItem("tenantId");
+
+  if (token && tenant) {
+    setAuthed(true);
+    setTenant(tenant);
+  }
+}, []);
+
 
   // ✅ Fetch data only when authenticated
   useEffect(() => {
