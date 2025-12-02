@@ -7,6 +7,12 @@ export default function Login({ onAuth }) {
   const [password, setPass] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+axios.post(`${BASE_URL}/auth/login`, ...)
+
 
   const login = async () => {
     if (!email || !password) {
