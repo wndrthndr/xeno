@@ -64,9 +64,14 @@ export default function Login({ onAuth }) {
 
           {error && <div style={{color:"red"}}>{error}</div>}
 
-          <button onClick={login} disabled={loading}>
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
+          <button
+  onClick={login}
+  disabled={loading}
+  className="w-full py-2 mt-3 rounded bg-violet-600 text-white font-semibold hover:bg-violet-700 disabled:bg-gray-600 transition"
+>
+  {loading ? "Signing in..." : "Sign In"}
+</button>
+
 
         </div>
       </div>
