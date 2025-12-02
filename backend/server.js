@@ -17,10 +17,7 @@ app.use("/api", auth, dashboardRoutes);
 
 // HEALTH
 app.get("/", (_, res) => res.send("✅ Backend running"));
-app.get("/seed", async (req, res) => {
-  await require("./seed")();
-  res.send("DONE");
-});
+
 
 
 const PORT = process.env.PORT || 5000;
