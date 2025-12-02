@@ -9,20 +9,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// PUBLIC
 app.use("/auth", authRoutes);
-
-// PROTECTED
 app.use("/api", auth, dashboardRoutes);
 
-// HEALTH
 app.get("/", (_, res) => res.send("✅ Backend running"));
 
-
-
 const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log("✅ Backend running on port", PORT);
-});
-
+app.listen(PORT, () => console.log("✅ Backend running on port", PORT));
