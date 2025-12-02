@@ -3,7 +3,10 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
-const SECRET = String(process.env.JWT_SECRET || "xeno_secret_key");
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET missing in environment");
+}
+const SECRET = String(process.env.JWT_SECRET);
 
 const USERS = [
   { id: 1, email: "xeno@test.com", password: bcrypt.hashSync("1234", 10), tenantId: 1 },
