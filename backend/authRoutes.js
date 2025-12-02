@@ -14,25 +14,11 @@ const SECRET = process.env.JWT_SECRET;
  * Do NOT hash at runtime.
  */
 const USERS = [
-  {
-    id: 1,
-    email: "xeno@test.com",
-    password: "$2a$12$2s67ItL.qTjOyTNLGBhWjeG6TMCLZtjv/eRe2.iGMU3oB8hqEP8Ka", // 1234
-    tenantId: 1
-  },
-  {
-    id: 2,
-    email: "store2@xeno.com",
-    password: "$2a$12$MdiZX2oVL.iC5fwMzjFv/OzQGFz.VXHBaoVlJT2tHQRv/mOlEwry6", // store2
-    tenantId: 2
-  },
-  {
-    id: 3,
-    email: "store3@xeno.com",
-    password: "$$2a$12$NpoDXkEHgocKvhvq1C3ClOmnS6VJl6X8zbgiOhxwh.7ax5wD4PKMu", // store3
-    tenantId: 3
-  }
+  { id: 1, email: "xeno@test.com", password: "1234", tenantId: 1 },
+  { id: 2, email: "store2@xeno.com", password: "store2", tenantId: 2 },
+  { id: 3, email: "store3@xeno.com", password: "store3", tenantId: 3 }
 ];
+
 
 // ✅ LOGIN
 router.post("/login", async (req, res) => {
@@ -42,8 +28,9 @@ router.post("/login", async (req, res) => {
     const user = USERS.find(u => u.email === email?.trim());
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(401).json({ error: "Wrong password" });
+    if (password !== user.password)
+  return res.status(401).json({ error: "Wrong password" });
+
 
     const token = jwt.sign(
       { userId: user.id, tenantId: user.tenantId },
