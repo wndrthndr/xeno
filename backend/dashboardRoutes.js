@@ -3,12 +3,9 @@ const db = require("./db");
 
 const router = express.Router();
 
-
-// WHO AM I
 router.get("/whoami", (req, res) => {
   res.json(req.user);
 });
-
 
 // METRICS
 router.get("/metrics", async (req, res) => {
@@ -23,7 +20,6 @@ router.get("/metrics", async (req, res) => {
 
   res.json(result.rows[0]);
 });
-
 
 // ORDERS BY DATE
 router.get("/orders-by-date", async (req, res) => {
@@ -44,18 +40,17 @@ router.get("/orders-by-date", async (req, res) => {
   res.json(result.rows);
 });
 
-
 // ORDERS LIST
 router.get("/orders", async (req, res) => {
   const result = await db.query(`
-    SELECT * FROM orders
+    SELECT *
+    FROM orders
     WHERE tenant_id = $1
     ORDER BY created_at DESC
   `, [req.user.tenantId]);
 
   res.json(result.rows);
 });
-
 
 // TOP CUSTOMERS
 router.get("/top-customers", async (req, res) => {
@@ -70,7 +65,6 @@ router.get("/top-customers", async (req, res) => {
 
   res.json(result.rows);
 });
-
 
 // REVENUE COMPARE
 router.get("/revenue-compare", async (req, res) => {
@@ -87,17 +81,15 @@ router.get("/revenue-compare", async (req, res) => {
     FROM orders
     WHERE tenant_id = $1
     AND created_at BETWEEN 
-        NOW() - INTERVAL '14 days'
+      NOW() - INTERVAL '14 days'
     AND NOW() - INTERVAL '7 days'
   `, [req.user.tenantId]);
 
   const cur = Number(last7.rows[0].revenue || 0);
   const prev = Number(prev7.rows[0].revenue || 0);
-
   const growth = prev === 0 ? 100 : (((cur - prev) / prev) * 100).toFixed(2);
 
   res.json({ last7: cur, previous7: prev, growth: Number(growth) });
 });
-
 
 module.exports = router;
