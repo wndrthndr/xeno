@@ -6,6 +6,8 @@ import TopCustomers from "./components/TopCustomers";
 import { PieChartComponent } from "./components/PieChart";
 
 export default function App() {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
   const [authed, setAuthed] = useState(!!localStorage.getItem("token"));
   const [tenant, setTenant] = useState(localStorage.getItem("tenantId"));
@@ -31,10 +33,10 @@ export default function App() {
   const fetchAll = async () => {
     try {
       const [m, d, t, c] = await Promise.all([
-        axios.get("http://localhost:5000/api/metrics"),
-        axios.get(`http://localhost:5000/api/orders-by-date?start=${start}&end=${end}`),
-        axios.get("http://localhost:5000/api/top-customers"),
-        axios.get("http://localhost:5000/api/revenue-compare")
+        axios.get(`${BASE_URL}/api/metrics`)
+axios.get(`${BASE_URL}/api/orders-by-date?start=${start}&end=${end}`)
+axios.get(`${BASE_URL}/api/top-customers`)
+axios.get(`${BASE_URL}/api/revenue-compare`)
       ]);
 
       setMetrics(m.data);
