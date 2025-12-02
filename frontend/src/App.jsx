@@ -56,13 +56,13 @@ export default function App() {
   if (!authed || !tenant) {
     return (
       <Login
-        onAuth={(token, tenantId) => {
-          localStorage.setItem("token", token);
-          localStorage.setItem("tenantId", tenantId);
-          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-          setTenant(tenantId);
-          setAuthed(true);
-        }}
+       onAuth={(token, tenantId) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("tenantId", tenantId);
+  setTenant(tenantId);
+  setAuthed(true);
+}}
+
       />
     );
   }
