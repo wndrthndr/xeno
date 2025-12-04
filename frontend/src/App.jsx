@@ -21,15 +21,7 @@ export default function App() {
   const [view, setView] = useState("daily");
 
   // ✅ FORCE LOGOUT ON LOAD (debug-safe)
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-  const tenant = localStorage.getItem("tenantId");
 
-  if (token && tenant) {
-    setAuthed(true);
-    setTenant(tenant);
-  }
-}, []);
 
 
   // ✅ Fetch data only when authenticated
